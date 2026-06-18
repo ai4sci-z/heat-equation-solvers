@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.12)
+project(HeatEquation CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+add_executable(heat1d heat1d.cpp)
+add_executable(heat2d heat2d.cpp)
+add_executable(heat3d heat3d.cpp)
