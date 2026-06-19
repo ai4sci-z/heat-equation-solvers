@@ -2,19 +2,31 @@
 
 用 **5 种语言**分别求解 **1D / 2D / 3D 热传导方程**，结果可相互对比验证。
 
+## 数学模型
+
 $$u_t = \alpha \nabla^2 u, \quad \alpha = 1, \quad \Omega = [0,1]^d$$
 
-边界条件：Dirichlet 零边界；初始条件：$\sin(\pi x)[\sin(\pi y)[\sin(\pi z)]]$
+**边界条件**：Dirichlet 零边界（各维边界 u = 0）
 
-精确解：$u = e^{-d\pi^2 t} \sin(\pi x)[\sin(\pi y)[\sin(\pi z)]]$
+**初始条件与精确解**（各维度独立）：
+
+| 维度 | 初始条件 $u(x, 0)$ | 精确解 $u(x, t)$ |
+|------|-------------------|-----------------|
+| 1D | $\sin(\pi x)$ | $e^{-\pi^2 t}\sin(\pi x)$ |
+| 2D | $\sin(\pi x)\sin(\pi y)$ | $e^{-2\pi^2 t}\sin(\pi x)\sin(\pi y)$ |
+| 3D | $\sin(\pi x)\sin(\pi y)\sin(\pi z)$ | $e^{-3\pi^2 t}\sin(\pi x)\sin(\pi y)\sin(\pi z)$ |
 
 ## 数值方法
 
 显式 FTCS（Forward-Time Centered-Space）有限差分：
 
-$$\frac{u^{n+1}-u^n}{\Delta t} = \alpha \frac{u^n_{i+1}-2u^n_i+u^n_{i-1}}{\Delta x^2}$$
+$$\frac{u^{n+1} - u^n}{\Delta t} = \alpha \frac{u^n_{i+1} - 2u^n_i + u^n_{i-1}}{\Delta x^2}$$
 
-CFL 稳定性条件：$r = \alpha \Delta t / \Delta x^2 \leq 1/(2d)$
+**CFL 稳定性条件**：
+
+$$r = \frac{\alpha \Delta t}{\Delta x^2} \leq \frac{1}{2d}$$
+
+其中 $d$ 为空间维度（1D: $r \leq 0.5$，2D: $r \leq 0.25$，3D: $r \leq 0.167$）。
 
 ## 语言与结果
 
@@ -45,28 +57,26 @@ cd fortran && make
 
 # MATLAB（在 MATLAB 中运行）
 cd matlab
-run heat1d.m
-run heat2d.m
-run heat3d.m
+run heat1d.m && run heat2d.m && run heat3d.m
 ```
 
-## 误差对比（L2，t=0.1，N=50）
+## 误差对比（L2 范数，t = 0.1，N = 50）
 
 | 语言 | 1D L2 误差 | 2D L2 误差 |
 |------|-----------|-----------|
-| Python | ~8×10⁻⁵ | ~2×10⁻⁴ |
-| Julia  | ~8×10⁻⁵ | ~2×10⁻⁴ |
-| C++    | ~8×10⁻⁵ | ~2×10⁻⁴ |
-| Fortran| ~8×10⁻⁵ | ~2×10⁻⁴ |
-| MATLAB | ~8×10⁻⁵ | ~2×10⁻⁴ |
+| Python  | ~8×10⁻⁵ | ~2×10⁻⁴ |
+| Julia   | ~8×10⁻⁵ | ~2×10⁻⁴ |
+| C++     | ~8×10⁻⁵ | ~2×10⁻⁴ |
+| Fortran | ~8×10⁻⁵ | ~2×10⁻⁴ |
+| MATLAB  | ~8×10⁻⁵ | ~2×10⁻⁴ |
 
-（五种语言使用相同算法、相同参数，误差一致）
+五种语言使用相同算法与参数，L2 误差一致，相互验证。
 
 ## 参数
 
 | 参数 | 值 |
 |------|----|
-| α（热扩散率）| 1.0 |
-| 网格点数 N | 50（1D/2D），20（3D） |
+| α（热扩散率） | 1.0 |
+| 网格点数 N | 50（1D / 2D），20（3D） |
 | 终止时刻 T | 0.1 |
 | CFL 数 r | 0.4（1D），0.2（2D），0.13（3D） |
